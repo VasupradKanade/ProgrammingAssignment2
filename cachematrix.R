@@ -1,35 +1,43 @@
-##Vasuprad.Kanade@accentre.com
-## Put comments here that give an overall description of what your
-## functions do
+## Vasuprad.Kanade@accentre.com
+## Function to use Lexical Scoping of R
+## Caching the Inverse of a Matrix
 
-## Write a short comment describing this function
-
-makeVector <- function(x = numeric()) {
-  m <- NULL
+## makeCacheMatrix: This function creates a special "matrix" object that can cache its inverse.
+makeCacheMatrix <- function(x = matrix()) {
+  # 1. set the value of the matrix
+  inv <- NULL
   set <- function(y) {
     x <<- y
-    m <<- NULL
+    inv <<- NULL
   }
+
+  # 2. get the value of the matrix
   get <- function() x
-  setmean <- function(mean) m <<- mean
-  getmean <- function() m
-  list(set = set, get = get,
-       setmean = setmean,
-       getmean = getmean)
+
+  # 3. set the value of inverse of the matrix
+  setinverse <- function(inverse) inv <<- inverse
+
+  # 4. get the value of inverse of the matrix
+  getinverse <- function() inv
+  list(set=set, get=get, setinverse=setinverse, getinverse=getinverse)
 }
 
 
+# The following function returns the inverse of the matrix.
+# This function assumes that the matrix is always invertible.
 
-## Write a short comment describing this function
-
-cachemean <- function(x, ...) {
-  m <- x$getmean()
-  if(!is.null(m)) {
-    message("getting cached data")
-    return(m)
+cacheSolve <- function(x, ...) {
+  # 1. Get the value of the matrix
+  inv <- x$getinverse()
+  # 2. Checks if the inverse has already been computed
+  if(!is.null(inv)) {
+    message("getting cached data.")
+    return(inv)
   }
+  # 3. Computes the inverse
   data <- x$get()
-  m <- mean(data, ...)
-  x$setmean(m)
-  m
+  inv <- solve(data)
+  # 4. Sets the value in the cache via setinverse function
+  x$setinverse(inv)
+  inv
 }
